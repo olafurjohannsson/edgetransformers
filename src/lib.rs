@@ -64,7 +64,7 @@ pub struct TransformerLayer {
 impl TransformerLayer {
     pub fn forward(&self, input: Array3<f32>, attention_mask: &Array2<f32>) -> Result<Array3<f32>> {
         // Self attention with residual
-        let mut attention_out = self.attention.forward(&input, attention_mask)?;
+        let mut attention_out = self.attention.forward(&input, None, Some(attention_mask))?;
         attention_out += &input;
         let attention_out = self.layer_norm1.forward_3d(&attention_out);
         

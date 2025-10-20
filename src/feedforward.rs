@@ -21,9 +21,9 @@ impl FeedForward {
         dense2_bias: Array1<f32>,
     ) -> Self {
         Self {
-            dense1_weight_t: dense1_weight.t().to_owned(),
+            dense1_weight_t: dense1_weight,
             dense1_bias,
-            dense2_weight_t: dense2_weight.t().to_owned(),
+            dense2_weight_t: dense2_weight,
             dense2_bias,
         }
     }

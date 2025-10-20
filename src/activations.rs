@@ -1,12 +1,14 @@
 //! Activation functions for transformers
 
 use ndarray::{Array3, Array4, Axis};
+use libm::erff;
 
 #[cfg(not(target_arch = "wasm32"))]
 use ndarray::parallel::prelude::*;
 
 const SQRT_2_OVER_PI: f32 = 0.7978845608_f32;
 const GELU_COEFF: f32 = 0.044715_f32;
+
 
 /// Activation function types
 pub enum Activation {
@@ -19,13 +21,11 @@ pub enum Activation {
 /// Apply GELU activation in-place
 #[inline(always)]
 pub fn gelu(x: &mut Array3<f32>) {
+    let scaling_factor = (2.0f32).sqrt() / 2.0;
     #[cfg(not(target_arch = "wasm32"))]
     {
         x.par_mapv_inplace(|val| {
-            let val_squared = val * val;
-            let val_cubed = val_squared * val;
-            let inner = SQRT_2_OVER_PI * (val + GELU_COEFF * val_cubed);
-            val * 0.5 * (1.0 + inner.tanh())
+            0.5 * val * (1.0 + erff(val * scaling_factor))
         });
     }
     
